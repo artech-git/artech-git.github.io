@@ -716,26 +716,21 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;But hold on a second, why would we need such an onsite coercion feature if we already have &lt;code&gt;AsRef&lt;&#x2F;code&gt; and &lt;code&gt;Borrow&lt;&#x2F;code&gt; traits to take care of the job? Well, I&#x27;m glad you asked!&lt;&#x2F;p&gt;
 &lt;p&gt;If you observe the above definition carefully, you will notice it is a concrete type, which is &lt;code&gt;&amp;amp;str&lt;&#x2F;code&gt;. However, for &lt;code&gt;AsRef&lt;&#x2F;code&gt; and &lt;code&gt;Borrow&lt;&#x2F;code&gt; traits, you will need to have a type that must implement them anyhow, therefore limiting the application and optimizations available.&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#fafafa;color:#61676c;&quot;&gt;&lt;code&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span&gt;Deref coercion is a powerful language feature if used correctly, you can read more about it [here](https:&#x2F;&#x2F;dev.to&#x2F;artechgit&#x2F;rust-deref-coercion-simplifying-borrowing-and-dereferencing-1a4a)
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span&gt;Now that we have built some understanding around it, let&amp;#39;s quickly compare them through a simple table.
-&lt;&#x2F;span&gt;&lt;span&gt;## Comparison Table
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span&gt;| Trait | Primary Purpose | Key Characteristics |
-&lt;&#x2F;span&gt;&lt;span&gt;|-------|----------------|-------------------|
-&lt;&#x2F;span&gt;&lt;span&gt;| `AsRef` | Cheap reference conversions | - No guarantees about equality or hashing&amp;lt;br&amp;gt;- Useful for generic functions accepting references |
-&lt;&#x2F;span&gt;&lt;span&gt;| `Borrow` | Borrowed data equivalence | - Guarantees about equality and hashing&amp;lt;br&amp;gt;- Essential for collections types like HashMap&#x2F;BtreeMap |
-&lt;&#x2F;span&gt;&lt;span&gt;| `Deref` | Smart pointer functionality | - Enables `*` operator&amp;lt;br&amp;gt;- Enables deref coercion&amp;lt;br&amp;gt;- Affects method resolution |
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span&gt;## Common Gotchas
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span&gt;1. **Deref Coercion Costs**
-&lt;&#x2F;span&gt;&lt;span&gt;```rust
-&lt;&#x2F;span&gt;&lt;span&gt;&#x2F;&#x2F; Multiple deref coercions can have performance implications
-&lt;&#x2F;span&gt;&lt;span&gt;let s = Box::new(String::from(&amp;quot;hello&amp;quot;));
-&lt;&#x2F;span&gt;&lt;span&gt;takes_str(&amp;amp;s);  &#x2F;&#x2F; Box -&amp;gt; String -&amp;gt; str, two dereferences
+&lt;p&gt;Deref coercion is a powerful language feature if used correctly, you can read more about it &lt;a href=&quot;https:&#x2F;&#x2F;dev.to&#x2F;artechgit&#x2F;rust-deref-coercion-simplifying-borrowing-and-dereferencing-1a4a&quot;&gt;here&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Now that we have built some understanding around it, let&#x27;s quickly compare them through a simple table.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;comparison-table&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#comparison-table&quot; aria-label=&quot;Anchor link for: comparison-table&quot;&gt;Comparison Table&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Trait&lt;&#x2F;th&gt;&lt;th&gt;Primary Purpose&lt;&#x2F;th&gt;&lt;th&gt;Key Characteristics&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;AsRef&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;Cheap reference conversions&lt;&#x2F;td&gt;&lt;td&gt;- No guarantees about equality or hashing&lt;br&gt;- Useful for generic functions accepting references&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;Borrow&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;Borrowed data equivalence&lt;&#x2F;td&gt;&lt;td&gt;- Guarantees about equality and hashing&lt;br&gt;- Essential for collections types like HashMap&#x2F;BtreeMap&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;code&gt;Deref&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;td&gt;Smart pointer functionality&lt;&#x2F;td&gt;&lt;td&gt;- Enables &lt;code&gt;*&lt;&#x2F;code&gt; operator&lt;br&gt;- Enables deref coercion&lt;br&gt;- Affects method resolution&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;h2 id=&quot;common-gotchas&quot;&gt;&lt;a class=&quot;zola-anchor&quot; href=&quot;#common-gotchas&quot; aria-label=&quot;Anchor link for: common-gotchas&quot;&gt;Common Gotchas&lt;&#x2F;a&gt;&lt;&#x2F;h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Deref Coercion Costs&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#fafafa;color:#61676c;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;font-style:italic;color:#abb0b6;&quot;&gt;&#x2F;&#x2F; Multiple deref coercions can have performance implications
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#fa6e32;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; s &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ed9366;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#55b4d4;&quot;&gt;Box&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ed9366;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span&gt;new(&lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#55b4d4;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ed9366;&quot;&gt;::&lt;&#x2F;span&gt;&lt;span&gt;from(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#86b300;&quot;&gt;&amp;quot;hello&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;))&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61676ccc;&quot;&gt;;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#f07171;&quot;&gt;takes_str&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ed9366;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;s)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61676ccc;&quot;&gt;;  &lt;&#x2F;span&gt;&lt;span style=&quot;font-style:italic;color:#abb0b6;&quot;&gt;&#x2F;&#x2F; Box -&amp;gt; String -&amp;gt; str, two dereferences
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;ol start=&quot;2&quot;&gt;
 &lt;li&gt;&lt;strong&gt;Borrow vs AsRef Choice&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
